@@ -1,9 +1,14 @@
-local gui = Instance.new("ScreenGui", game.Players.LocalPlayer.PlayerGui)
+task.wait(1)
 
-local label = Instance.new("TextLabel", gui)
-label.Size = UDim2.fromScale(0.4, 0.1)
-label.Position = UDim2.fromScale(0.3, 0.45)
-label.Text = "LOADSTRING OK"
-label.TextScaled = true
-label.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-label.TextColor3 = Color3.new(1,1,1)
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player.PlayerGui)
+
+local btn = Instance.new("TextButton", gui)
+btn.Size = UDim2.fromScale(0.3, 0.1)
+btn.Position = UDim2.fromScale(0.35, 0.4)
+btn.Text = "FLY ON / OFF"
+btn.TextScaled = true
+
+btn.MouseButton1Click:Connect(function()
+	print("Bấm nút Fly")
+end)
