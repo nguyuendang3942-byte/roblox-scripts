@@ -98,6 +98,45 @@ RunService.Stepped:Connect(function()
 	end
 end)
 
+-- WALK FLING
+local walkFling = false
+local wfBtn = btn("WALKFLING: OFF", 0.62)
+
+local wfConn
+wfBtn.MouseButton1Click:Connect(function()
+	walkFling = not walkFling
+	wfBtn.Text = walkFling and "WALKFLING: ON" or "WALKFLING: OFF"
+
+	if walkFling then
+		wfConn = RunService.Stepped:Connect(function()
+			for _,p in pairs(Players:GetPlayers()) do
+				if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+					local dist = (hrp.Position - p.Character.HumanoidRootPart.Position).Magnitude
+					if dist < 6 then
+						local bv = Instance.new("BodyVelocity")
+						bv.Velocity = Vector3.new(500,500,500)
+						bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+						bv.Parent = hrp
+						game.Debris:AddItem(bv,0.1)
+					end
+				end
+			end
+		end)
+	else
+		if wfConn then wfConn:Disconnect() end
+	end
+end)
+
+-- SPEED
+local speedOn = false
+local speedBtn = btn("SPEED: OFF", 0.72)
+
+speedBtn.MouseButton1Click:Connect(function()
+	speedOn = not speedOn
+	speedBtn.Text = speedOn and "SPEED: ON" or "SPEED: OFF"
+	hum.WalkSpeed = speedOn and 50 or 16
+end)
+
 -- ESP NAME
 local esp=false
 local espBtn = btn("ESP NAME: OFF",0.32)
@@ -147,5 +186,29 @@ tpBtn.MouseButton1Click:Connect(function()
 	local p=plrs[math.random(1,#plrs)]
 	if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
 		hrp.CFrame=p.Character.HumanoidRootPart.CFrame*CFrame.new(0,0,2)
+	end
+end)
+
+-- ANTI LAG
+local antilag = false
+local antilagBtn = btn("ANTILAG: OFF", 0.82)
+
+antilagBtn.MouseButton1Click:Connect(function()
+	antilag = not antilag
+	antilagBtn.Text = antilag and "ANTILAG: ON" or "ANTILAG: OFF"
+
+	for _,v in pairs(workspace:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.Material = Enum.Material.Plastic
+			v.Reflectance = 0
+		elseif v:IsA("Decal") or v:IsA("Texture") then
+			v.Transparency = antilag and 1 or 0
+		elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+			v.Enabled = not antilag
+		end
+	end
+
+	if antilag then
+		settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
 	end
 end)
