@@ -25,7 +25,7 @@ Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.fromScale(1,0.1)
-title.Text = "🔥 PC MENU"
+title.Text = "Cao Bình Minh"
 title.TextColor3 = Color3.new(1,1,1)
 title.TextScaled = true
 title.BackgroundTransparency = 1
@@ -42,13 +42,11 @@ local function btn(text,y)
 	return b
 end
 
--- MENU TOGGLE (RightShift)
 UIS.InputBegan:Connect(function(i,g)
 	if not g and i.KeyCode == Enum.KeyCode.RightShift then
 		frame.Visible = not frame.Visible
 	end
 end)
-
 -- FLY
 local fly, bv, bg, flyConn = false
 local flyBtn = btn("FLY: OFF",0.12)
