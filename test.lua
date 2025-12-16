@@ -207,13 +207,13 @@ floatBtn.MouseButton1Click:Connect(function()
 
 			local y = 0
 			if UIS:IsKeyDown(Enum.KeyCode.E) then
-				y = 25      -- lên
+				y = 18      -- lên
 			elseif UIS:IsKeyDown(Enum.KeyCode.Q) then
-				y = -25     -- xuống
+				y = -18     -- xuống
 			end
 
 			if move.Magnitude > 0 then
-				move = move.Unit * 35 -- tốc độ di chuyển ngang
+				move = move.Unit * 25 -- tốc độ di chuyển ngang
 			end
 
 			bv.Velocity = Vector3.new(move.X, y, move.Z)
