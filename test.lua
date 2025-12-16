@@ -169,10 +169,11 @@ espBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- FLOAT (ĐỨNG TRÊN KHÔNG + LÊN/XUỐNG)
+-- FLOAT MƯỢT (KHÔNG GIẬT)
 local float = false
 local floatBtn = btn("FLOAT: OFF", 0.42)
-local bp
+
+local bv
 local floatConn
 
 floatBtn.MouseButton1Click:Connect(function()
@@ -180,23 +181,26 @@ floatBtn.MouseButton1Click:Connect(function()
 	floatBtn.Text = float and "FLOAT: ON" or "FLOAT: OFF"
 
 	if float then
-		bp = Instance.new("BodyPosition")
-		bp.MaxForce = Vector3.new(1e5, 1e5, 1e5)
-		bp.Position = hrp.Position
-		bp.Parent = hrp
+		hum.PlatformStand = true
+
+		bv = Instance.new("BodyVelocity")
+		bv.MaxForce = Vector3.new(0, 1e5, 0)
+		bv.Velocity = Vector3.new(0, 0, 0)
+		bv.Parent = hrp
 
 		floatConn = RunService.RenderStepped:Connect(function()
-			local y = bp.Position.Y
+			local vy = 0
 			if UIS:IsKeyDown(Enum.KeyCode.E) then
-				y += 1.5
+				vy = 35      -- lên
 			elseif UIS:IsKeyDown(Enum.KeyCode.Q) then
-				y -= 1.5
+				vy = -35     -- xuống
 			end
-			bp.Position = Vector3.new(hrp.Position.X, y, hrp.Position.Z)
+			bv.Velocity = Vector3.new(0, vy, 0)
 		end)
 	else
+		hum.PlatformStand = false
 		if floatConn then floatConn:Disconnect() end
-		if bp then bp:Destroy() end
+		if bv then bv:Destroy() end
 	end
 end)
 
