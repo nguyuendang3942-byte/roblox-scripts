@@ -127,14 +127,81 @@ wfBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- SPEED
+-- SPEED (CHẠY NHANH)
 local speedOn = false
 local speedBtn = btn("SPEED: OFF", 0.72)
+
+local NORMAL_SPEED = 16   -- tốc độ mặc định
+local FAST_SPEED = 80     -- tốc độ khi bật speed
 
 speedBtn.MouseButton1Click:Connect(function()
 	speedOn = not speedOn
 	speedBtn.Text = speedOn and "SPEED: ON" or "SPEED: OFF"
-	hum.WalkSpeed = speedOn and 80 or 16
+
+	if speedOn then
+		hum.WalkSpeed = FAST_SPEED
+	else
+		hum.WalkSpeed = NORMAL_SPEED
+	end
+end)
+
+-- KILL AURA
+local killAura = false
+local kaBtn = btn("KILL AURA: OFF", 0.78)
+local kaConn
+
+local KILL_RANGE = 20      -- bán kính đánh
+local DAMAGE = 25          -- sát thương mỗi hit
+local HIT_DELAY = 0.2      -- tốc độ đánh (giây)
+
+kaBtn.MouseButton1Click:Connect(function()
+	killAura = not killAura
+	kaBtn.Text = killAura and "KILL AURA: ON" or "KILL AURA: OFF"
+
+	if killAura then
+		kaConn = task.spawn(function()
+			while killAura do
+				for _,p in pairs(Players:GetPlayers()) do
+					if p ~= lp and p.Character and p.Character:FindFirstChild("Humanoid") and p.Character:FindFirstChild("HumanoidRootPart") then
+						local th = p.Character.Humanoid
+						local thrp = p.Character.HumanoidRootPart
+
+						if th.Health > 0 and (hrp.Position - thrp.Position).Magnitude <= KILL_RANGE then
+							pcall(function()
+								th:TakeDamage(DAMAGE)
+							end)
+						end
+					end
+				end
+				task.wait(HIT_DELAY)
+			end
+		end)
+	end
+end)
+
+-- GOD MODE (AUTO HEAL)
+local god = false
+local godBtn = btn("GOD MODE: OFF", 0.88)
+local godConn
+
+godBtn.MouseButton1Click:Connect(function()
+	god = not god
+	godBtn.Text = god and "GOD MODE: ON" or "GOD MODE: OFF"
+
+	if god then
+		hum.MaxHealth = math.huge
+		hum.Health = hum.MaxHealth
+
+		godConn = hum.HealthChanged:Connect(function()
+			if god and hum.Health < hum.MaxHealth then
+				hum.Health = hum.MaxHealth
+			end
+		end)
+	else
+		if godConn then godConn:Disconnect() end
+		hum.MaxHealth = 100
+		hum.Health = 100
+	end
 end)
 
 -- ESP NAME
