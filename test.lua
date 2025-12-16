@@ -169,23 +169,59 @@ espBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- FLOAT UP / DOWN
-local float=false
-local floatBtn = btn("FLOAT: OFF",0.42)
+-- FLOAT (ĐỨNG TRÊN KHÔNG + LÊN/XUỐNG)
+local float = false
+local floatBtn = btn("FLOAT: OFF", 0.42)
+local bp
+local floatConn
 
 floatBtn.MouseButton1Click:Connect(function()
-	float=not float
-	floatBtn.Text=float and "FLOAT: ON" or "FLOAT: OFF"
-	hum:ChangeState(float and Enum.HumanoidStateType.Physics or Enum.HumanoidStateType.GettingUp)
+	float = not float
+	floatBtn.Text = float and "FLOAT: ON" or "FLOAT: OFF"
+
+	if float then
+		bp = Instance.new("BodyPosition")
+		bp.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+		bp.Position = hrp.Position
+		bp.Parent = hrp
+
+		floatConn = RunService.RenderStepped:Connect(function()
+			local y = bp.Position.Y
+			if UIS:IsKeyDown(Enum.KeyCode.E) then
+				y += 1.5
+			elseif UIS:IsKeyDown(Enum.KeyCode.Q) then
+				y -= 1.5
+			end
+			bp.Position = Vector3.new(hrp.Position.X, y, hrp.Position.Z)
+		end)
+	else
+		if floatConn then floatConn:Disconnect() end
+		if bp then bp:Destroy() end
+	end
 end)
 
--- TELEPORT TO RANDOM PLAYER
-local tpBtn = btn("TELEPORT PLAYER",0.52)
+-- TELEPORT THEO TÊN
+local tpBox = Instance.new("TextBox", frame)
+tpBox.Size = UDim2.fromScale(0.9, 0.07)
+tpBox.Position = UDim2.fromScale(0.05, 0.52)
+tpBox.PlaceholderText = "Nhập tên player..."
+tpBox.Text = ""
+tpBox.TextScaled = true
+tpBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
+tpBox.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", tpBox).CornerRadius = UDim.new(0,10)
+
+local tpBtn = btn("TELEPORT", 0.60)
+
 tpBtn.MouseButton1Click:Connect(function()
-	local plrs=Players:GetPlayers()
-	local p=plrs[math.random(1,#plrs)]
-	if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-		hrp.CFrame=p.Character.HumanoidRootPart.CFrame*CFrame.new(0,0,2)
+	local name = tpBox.Text:lower()
+	for _,p in pairs(Players:GetPlayers()) do
+		if p ~= lp and p.Name:lower():find(name) then
+			if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+				hrp.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+				break
+			end
+		end
 	end
 end)
 
