@@ -98,26 +98,26 @@ RunService.Stepped:Connect(function()
 	end
 end)
 
--- WALK FLING
+-- WALKFLING (FLING NGƯỜI KHÁC)
 local walkFling = false
 local wfBtn = btn("WALKFLING: OFF", 0.62)
-
 local wfConn
+
 wfBtn.MouseButton1Click:Connect(function()
 	walkFling = not walkFling
 	wfBtn.Text = walkFling and "WALKFLING: ON" or "WALKFLING: OFF"
 
 	if walkFling then
-		wfConn = RunService.Stepped:Connect(function()
+		wfConn = RunService.Heartbeat:Connect(function()
 			for _,p in pairs(Players:GetPlayers()) do
 				if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-					local dist = (hrp.Position - p.Character.HumanoidRootPart.Position).Magnitude
-					if dist < 6 then
+					local targetHRP = p.Character.HumanoidRootPart
+					if (hrp.Position - targetHRP.Position).Magnitude < 7 then
 						local bv = Instance.new("BodyVelocity")
-						bv.Velocity = Vector3.new(500,500,500)
+						bv.Velocity = (targetHRP.Position - hrp.Position).Unit * 300 + Vector3.new(0,200,0)
 						bv.MaxForce = Vector3.new(1e5,1e5,1e5)
-						bv.Parent = hrp
-						game.Debris:AddItem(bv,0.1)
+						bv.Parent = targetHRP
+						game:GetService("Debris"):AddItem(bv,0.15)
 					end
 				end
 			end
@@ -134,7 +134,7 @@ local speedBtn = btn("SPEED: OFF", 0.72)
 speedBtn.MouseButton1Click:Connect(function()
 	speedOn = not speedOn
 	speedBtn.Text = speedOn and "SPEED: ON" or "SPEED: OFF"
-	hum.WalkSpeed = speedOn and 50 or 16
+	hum.WalkSpeed = speedOn and 80 or 16
 end)
 
 -- ESP NAME
