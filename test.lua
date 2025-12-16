@@ -43,10 +43,11 @@ local function btn(text,y)
 end
 
 UIS.InputBegan:Connect(function(i,g)
-	if not g and i.KeyCode == Enum.KeyCode.RightShift then
+	if not g and i.KeyCode == Enum.KeyCode.R then
 		frame.Visible = not frame.Visible
 	end
 end)
+
 -- FLY
 local fly, bv, bg, flyConn = false
 local flyBtn = btn("FLY: OFF",0.12)
