@@ -169,7 +169,7 @@ espBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- FLOAT MƯỢT (KHÔNG GIẬT)
+-- FLOAT + DI CHUYỂN (WASD + Q/E)
 local float = false
 local floatBtn = btn("FLOAT: OFF", 0.42)
 
@@ -184,18 +184,39 @@ floatBtn.MouseButton1Click:Connect(function()
 		hum.PlatformStand = true
 
 		bv = Instance.new("BodyVelocity")
-		bv.MaxForce = Vector3.new(0, 1e5, 0)
-		bv.Velocity = Vector3.new(0, 0, 0)
+		bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+		bv.Velocity = Vector3.zero
 		bv.Parent = hrp
 
 		floatConn = RunService.RenderStepped:Connect(function()
-			local vy = 0
-			if UIS:IsKeyDown(Enum.KeyCode.E) then
-				vy = 35      -- lên
-			elseif UIS:IsKeyDown(Enum.KeyCode.Q) then
-				vy = -35     -- xuống
+			local cam = workspace.CurrentCamera
+			local move = Vector3.zero
+
+			if UIS:IsKeyDown(Enum.KeyCode.W) then
+				move += cam.CFrame.LookVector
 			end
-			bv.Velocity = Vector3.new(0, vy, 0)
+			if UIS:IsKeyDown(Enum.KeyCode.S) then
+				move -= cam.CFrame.LookVector
+			end
+			if UIS:IsKeyDown(Enum.KeyCode.A) then
+				move -= cam.CFrame.RightVector
+			end
+			if UIS:IsKeyDown(Enum.KeyCode.D) then
+				move += cam.CFrame.RightVector
+			end
+
+			local y = 0
+			if UIS:IsKeyDown(Enum.KeyCode.E) then
+				y = 25      -- lên
+			elseif UIS:IsKeyDown(Enum.KeyCode.Q) then
+				y = -25     -- xuống
+			end
+
+			if move.Magnitude > 0 then
+				move = move.Unit * 35 -- tốc độ di chuyển ngang
+			end
+
+			bv.Velocity = Vector3.new(move.X, y, move.Z)
 		end)
 	else
 		hum.PlatformStand = false
@@ -203,6 +224,7 @@ floatBtn.MouseButton1Click:Connect(function()
 		if bv then bv:Destroy() end
 	end
 end)
+
 
 -- TELEPORT THEO TÊN
 local tpBox = Instance.new("TextBox", frame)
