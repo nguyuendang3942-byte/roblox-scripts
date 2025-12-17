@@ -14,16 +14,33 @@ local hrp = char:WaitForChild("HumanoidRootPart")
 local gui = Instance.new("ScreenGui", lp.PlayerGui)
 gui.Name = "PCMenu"
 
+-- FRAME CHÍNH
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.fromScale(0.32, 0.55)
 frame.Position = UDim2.fromScale(0.05, 0.22)
 frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
 frame.Active = true
 frame.Draggable = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
+
+-- SCROLLING FRAME (MENU CUỘN)
+local scroll = Instance.new("ScrollingFrame", frame)
+scroll.Size = UDim2.fromScale(1,1)
+scroll.CanvasSize = UDim2.new(0,0,0,0)
+scroll.ScrollBarImageTransparency = 0.2
+scroll.ScrollBarThickness = 6
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.None
+scroll.BackgroundTransparency = 1
+scroll.BorderSizePixel = 0
+
+local layout = Instance.new("UIListLayout", frame)
+layout.Padding = UDim.new(0, 8)
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
-local title = Instance.new("TextLabel", frame)
+local b = Instance.new("TextButton", scroll)
 title.Size = UDim2.fromScale(1,0.1)
 title.Text = "Cao Bình Minh"
 title.TextColor3 = Color3.new(1,1,1)
@@ -145,37 +162,42 @@ speedBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- KILL AURA
+-- KILL AURA (AUTO ATTACK TOOL)
 local killAura = false
-local kaBtn = btn("KILL AURA: OFF", 0.78)
+local kaBtn = btn("KILL AURA: OFF")
 local kaConn
+local ATTACK_RANGE = 12
 
-local KILL_RANGE = 20      -- bán kính đánh
-local DAMAGE = 25          -- sát thương mỗi hit
-local HIT_DELAY = 0.2      -- tốc độ đánh (giây)
+local function getTool()
+	for _,v in pairs(char:GetChildren()) do
+		if v:IsA("Tool") then
+			return v
+		end
+	end
+end
 
 kaBtn.MouseButton1Click:Connect(function()
 	killAura = not killAura
 	kaBtn.Text = killAura and "KILL AURA: ON" or "KILL AURA: OFF"
 
 	if killAura then
-		kaConn = task.spawn(function()
-			while killAura do
-				for _,p in pairs(Players:GetPlayers()) do
-					if p ~= lp and p.Character and p.Character:FindFirstChild("Humanoid") and p.Character:FindFirstChild("HumanoidRootPart") then
-						local th = p.Character.Humanoid
-						local thrp = p.Character.HumanoidRootPart
+		kaConn = RunService.Heartbeat:Connect(function()
+			local tool = getTool()
+			if not tool then return end
 
-						if th.Health > 0 and (hrp.Position - thrp.Position).Magnitude <= KILL_RANGE then
-							pcall(function()
-								th:TakeDamage(DAMAGE)
-							end)
-						end
+			for _,p in pairs(Players:GetPlayers()) do
+				if p ~= lp and p.Character and p.Character:FindFirstChild("Humanoid") and p.Character:FindFirstChild("HumanoidRootPart") then
+					local th = p.Character.Humanoid
+					local thrp = p.Character.HumanoidRootPart
+
+					if th.Health > 0 and (hrp.Position - thrp.Position).Magnitude <= ATTACK_RANGE then
+						tool:Activate() -- GỌI ĐÁNH
 					end
 				end
-				task.wait(HIT_DELAY)
 			end
 		end)
+	else
+		if kaConn then kaConn:Disconnect() end
 	end
 end)
 
