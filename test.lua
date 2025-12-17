@@ -52,7 +52,8 @@ title.Parent = scroll
 title.Size = UDim2.fromScale(1, 0.1)
 title.Text = "Cao Bình Minh"
 title.TextColor3 = Color3.new(1,1,1)
-title.TextScaled = true
+title.TextScaled = false
+title.TextSize = 22
 title.BackgroundTransparency = 1
 
 -- BUTTON FUNCTION (ĐÚNG)
@@ -61,7 +62,8 @@ local function btn(text)
 	b.Parent = scroll
 	b.Size = UDim2.fromScale(0.9,0.085)
 	b.Text = text
-	b.TextScaled = true
+	b.TextScaled = false
+b.TextSize = 18
 	b.BackgroundColor3 = Color3.fromRGB(50,50,50)
 	b.TextColor3 = Color3.new(1,1,1)
 	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
