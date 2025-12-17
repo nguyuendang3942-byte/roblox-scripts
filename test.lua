@@ -25,6 +25,22 @@ frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
+-- MÀU NỀN ĐẸP HƠN
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BackgroundTransparency = 0
+
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
+
+-- SHADOW (ĐỔ BÓNG)
+local shadow = Instance.new("ImageLabel")
+shadow.Parent = frame
+shadow.Size = UDim2.fromScale(1.1, 1.1)
+shadow.Position = UDim2.fromScale(-0.05, -0.05)
+shadow.BackgroundTransparency = 1
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageTransparency = 0.6
+shadow.ZIndex = 1
+
 -- SCROLL
 local scroll = Instance.new("ScrollingFrame")
 scroll.Parent = frame
@@ -33,6 +49,21 @@ scroll.CanvasSize = UDim2.new(0,0,0,0)
 scroll.ScrollBarThickness = 6
 scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
+
+local header = Instance.new("Frame")
+header.Parent = scroll
+header.Size = UDim2.new(1, -12, 0, 45)
+header.BackgroundColor3 = Color3.fromRGB(30,30,30)
+Instance.new("UICorner", header).CornerRadius = UDim.new(0,12)
+
+local title = Instance.new("TextLabel")
+title.Parent = header
+title.Size = UDim2.fromScale(1,1)
+title.BackgroundTransparency = 1
+title.Text = "Cao Bình Minh Hub"
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
 
 -- LIST LAYOUT (QUAN TRỌNG)
 local layout = Instance.new("UIListLayout")
@@ -70,14 +101,20 @@ b.TextSize = 18
 	return b
 end
 
+local open = true
+frame.Size = UDim2.fromScale(0.32, 0.55)
+
 UIS.InputBegan:Connect(function(input, gp)
 	if gp then return end
-
-	-- tránh bị TextBox chặn phím
 	if UIS:GetFocusedTextBox() then return end
 
 	if input.KeyCode == Enum.KeyCode.R then
-		frame.Visible = not frame.Visible
+		open = not open
+		TweenService:Create(
+			frame,
+			TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+			{Size = open and UDim2.fromScale(0.32,0.55) or UDim2.fromScale(0,0)}
+		):Play()
 	end
 end)
 
