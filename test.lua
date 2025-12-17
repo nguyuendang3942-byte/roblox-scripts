@@ -11,11 +11,13 @@ local hum = char:WaitForChild("Humanoid")
 local hrp = char:WaitForChild("HumanoidRootPart")
 
 -- GUI
-local gui = Instance.new("ScreenGui", lp.PlayerGui)
+local gui = Instance.new("ScreenGui")
 gui.Name = "PCMenu"
+gui.Parent = lp.PlayerGui
 
 -- FRAME CHÍNH
-local frame = Instance.new("Frame", gui)
+local frame = Instance.new("Frame")
+frame.Parent = gui
 frame.Size = UDim2.fromScale(0.32, 0.55)
 frame.Position = UDim2.fromScale(0.05, 0.22)
 frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
@@ -23,34 +25,41 @@ frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
--- SCROLLING FRAME (MENU CUỘN)
-local scroll = Instance.new("ScrollingFrame", frame)
+-- SCROLL
+local scroll = Instance.new("ScrollingFrame")
+scroll.Parent = frame
 scroll.Size = UDim2.fromScale(1,1)
 scroll.CanvasSize = UDim2.new(0,0,0,0)
-scroll.ScrollBarImageTransparency = 0.2
 scroll.ScrollBarThickness = 6
-scroll.AutomaticCanvasSize = Enum.AutomaticSize.None
 scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
 
-local layout = Instance.new("UIListLayout", frame)
+-- LIST LAYOUT (QUAN TRỌNG)
+local layout = Instance.new("UIListLayout")
+layout.Parent = scroll
 layout.Padding = UDim.new(0, 8)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
+-- AUTO RESIZE SCROLL
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 20)
+end)
 
-local b = Instance.new("TextButton", scroll)
-title.Size = UDim2.fromScale(1,0.1)
+-- TITLE
+local title = Instance.new("TextLabel")
+title.Parent = scroll
+title.Size = UDim2.fromScale(1, 0.1)
 title.Text = "Cao Bình Minh"
 title.TextColor3 = Color3.new(1,1,1)
 title.TextScaled = true
 title.BackgroundTransparency = 1
 
-local function btn(text,y)
-	local b = Instance.new("TextButton", frame)
+-- BUTTON FUNCTION (ĐÚNG)
+local function btn(text)
+	local b = Instance.new("TextButton")
+	b.Parent = scroll
 	b.Size = UDim2.fromScale(0.9,0.085)
-	b.Position = UDim2.fromScale(0.05,y)
 	b.Text = text
 	b.TextScaled = true
 	b.BackgroundColor3 = Color3.fromRGB(50,50,50)
@@ -58,12 +67,6 @@ local function btn(text,y)
 	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
 	return b
 end
-
-UIS.InputBegan:Connect(function(i,g)
-	if not g and i.KeyCode == Enum.KeyCode.R then
-		frame.Visible = not frame.Visible
-	end
-end)
 
 -- FLY
 local fly, bv, bg, flyConn = false
