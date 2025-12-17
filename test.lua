@@ -70,6 +70,17 @@ b.TextSize = 18
 	return b
 end
 
+UIS.InputBegan:Connect(function(input, gp)
+	if gp then return end
+
+	-- tránh bị TextBox chặn phím
+	if UIS:GetFocusedTextBox() then return end
+
+	if input.KeyCode == Enum.KeyCode.R then
+		frame.Visible = not frame.Visible
+	end
+end)
+
 -- FLY
 local fly, bv, bg, flyConn = false
 local flyBtn = btn("FLY: OFF",0.12)
