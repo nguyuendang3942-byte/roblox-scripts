@@ -1,31 +1,16 @@
---// PC MENU SCRIPT
-task.wait(1)
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UIS = game:GetService("UserInputService")
-
-local lp = Players.LocalPlayer
-local char = lp.Character or lp.CharacterAdded:Wait()
-local hum = char:WaitForChild("Humanoid")
-local hrp = char:WaitForChild("HumanoidRootPart")
-
 -- SERVICES
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
-
 local lp = Players.LocalPlayer
 
 -- GUI
-local gui = Instance.new("ScreenGui")
+local gui = Instance.new("ScreenGui", lp.PlayerGui)
 gui.Name = "PCMenu"
 gui.ResetOnSpawn = false
-gui.Parent = lp.PlayerGui
 
 -- FRAME
-local frame = Instance.new("Frame")
-frame.Parent = gui
+local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.fromScale(0.32, 0.55)
 frame.Position = UDim2.fromScale(0.05, 0.22)
 frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
@@ -35,74 +20,50 @@ frame.ZIndex = 2
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
 -- SHADOW
-local shadow = Instance.new("ImageLabel")
-shadow.Parent = frame
-shadow.Size = UDim2.fromScale(1.1,1.1)
-shadow.Position = UDim2.fromScale(-0.05,-0.05)
+local shadow = Instance.new("ImageLabel", gui)
+shadow.Size = frame.Size + UDim2.fromScale(0.05,0.05)
+shadow.Position = frame.Position - UDim2.fromScale(0.025,0.025)
 shadow.BackgroundTransparency = 1
 shadow.Image = "rbxassetid://1316045217"
 shadow.ImageTransparency = 0.6
 shadow.ZIndex = 1
 
 -- SCROLL
-local scroll = Instance.new("ScrollingFrame")
-scroll.Parent = frame
+local scroll = Instance.new("ScrollingFrame", frame)
 scroll.Size = UDim2.fromScale(1,1)
-scroll.CanvasSize = UDim2.new(0,0,0,0)
 scroll.ScrollBarThickness = 6
 scroll.BackgroundTransparency = 1
-scroll.BorderSizePixel = 0
 scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
--- LAYOUT
-local layout = Instance.new("UIListLayout")
-layout.Parent = scroll
+local padding = Instance.new("UIPadding", scroll)
+padding.PaddingTop = UDim.new(0,10)
+
+local layout = Instance.new("UIListLayout", scroll)
 layout.Padding = UDim.new(0,8)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
 -- HEADER
-local header = Instance.new("Frame")
-header.Parent = scroll
+local header = Instance.new("Frame", scroll)
 header.Size = UDim2.new(1,-12,0,45)
 header.BackgroundColor3 = Color3.fromRGB(30,30,30)
 Instance.new("UICorner", header).CornerRadius = UDim.new(0,12)
 
-local title = Instance.new("TextLabel")
-title.Parent = header
+local title = Instance.new("TextLabel", header)
 title.Size = UDim2.fromScale(1,1)
 title.BackgroundTransparency = 1
 title.Text = "Cao Bình Minh Hub"
-title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextColor3 = Color3.new(1,1,1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 20
 
--- BUTTON FUNC
-local function btn(text)
-	local b = Instance.new("TextButton")
-	b.Parent = scroll
-	b.Size = UDim2.fromScale(0.9,0.085)
-	b.Text = text
-	b.TextSize = 18
-	b.BackgroundColor3 = Color3.fromRGB(50,50,50)
-	b.TextColor3 = Color3.new(1,1,1)
-	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
-	return b
-end
-
--- TOGGLE MENU (R)
 local open = true
 UIS.InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if UIS:GetFocusedTextBox() then return end
+	if gp or UIS:GetFocusedTextBox() then return end
 
 	if input.KeyCode == Enum.KeyCode.R then
 		open = not open
-		TweenService:Create(
-			frame,
-			TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
-			{Size = open and UDim2.fromScale(0.32,0.55) or UDim2.fromScale(0,0)}
-		):Play()
+		frame.Visible = open
+		shadow.Visible = open
 	end
 end)
 
