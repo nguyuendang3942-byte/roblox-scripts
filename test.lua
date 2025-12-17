@@ -193,6 +193,45 @@ espBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- WALKFLING (ĐẾN GẦN LÀ BAY)
+local walkFling = false
+local wfBtn = newButton("WALK FLING : OFF")
+
+local wfConn
+local FLING_RANGE = 7     -- khoảng cách kích hoạt
+local FLING_POWER = 350  -- lực fling
+
+wfBtn.MouseButton1Click:Connect(function()
+	walkFling = not walkFling
+	wfBtn.Text = walkFling and "WALK FLING : ON" or "WALK FLING : OFF"
+
+	if walkFling then
+		wfConn = RunService.Heartbeat:Connect(function()
+			for _,p in pairs(Players:GetPlayers()) do
+				if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+					local thrp = p.Character.HumanoidRootPart
+
+					if (hrp.Position - thrp.Position).Magnitude <= FLING_RANGE then
+						local bv = Instance.new("BodyVelocity")
+						bv.Velocity =
+							(hrp.CFrame.LookVector * FLING_POWER)
+							+ Vector3.new(0, FLING_POWER / 1.5, 0)
+
+						bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+						bv.Parent = thrp
+						game:GetService("Debris"):AddItem(bv, 0.15)
+					end
+				end
+			end
+		end)
+	else
+		if wfConn then
+			wfConn:Disconnect()
+			wfConn = nil
+		end
+	end
+end)
+
 -- TELEPORT THEO TÊN
 local tpBox = Instance.new("TextBox", scroll)
 tpBox.Size = UDim2.fromScale(0.9, 0.075)
