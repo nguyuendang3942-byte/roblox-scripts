@@ -10,32 +10,35 @@ local char = lp.Character or lp.CharacterAdded:Wait()
 local hum = char:WaitForChild("Humanoid")
 local hrp = char:WaitForChild("HumanoidRootPart")
 
+-- SERVICES
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local lp = Players.LocalPlayer
+
 -- GUI
 local gui = Instance.new("ScreenGui")
 gui.Name = "PCMenu"
+gui.ResetOnSpawn = false
 gui.Parent = lp.PlayerGui
 
--- FRAME CHÍNH
+-- FRAME
 local frame = Instance.new("Frame")
 frame.Parent = gui
 frame.Size = UDim2.fromScale(0.32, 0.55)
 frame.Position = UDim2.fromScale(0.05, 0.22)
-frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
 frame.Active = true
 frame.Draggable = true
+frame.ZIndex = 2
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
--- MÀU NỀN ĐẸP HƠN
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.BackgroundTransparency = 0
-
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
-
--- SHADOW (ĐỔ BÓNG)
+-- SHADOW
 local shadow = Instance.new("ImageLabel")
 shadow.Parent = frame
-shadow.Size = UDim2.fromScale(1.1, 1.1)
-shadow.Position = UDim2.fromScale(-0.05, -0.05)
+shadow.Size = UDim2.fromScale(1.1,1.1)
+shadow.Position = UDim2.fromScale(-0.05,-0.05)
 shadow.BackgroundTransparency = 1
 shadow.Image = "rbxassetid://1316045217"
 shadow.ImageTransparency = 0.6
@@ -49,10 +52,19 @@ scroll.CanvasSize = UDim2.new(0,0,0,0)
 scroll.ScrollBarThickness = 6
 scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
+-- LAYOUT
+local layout = Instance.new("UIListLayout")
+layout.Parent = scroll
+layout.Padding = UDim.new(0,8)
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Top
+
+-- HEADER
 local header = Instance.new("Frame")
 header.Parent = scroll
-header.Size = UDim2.new(1, -12, 0, 45)
+header.Size = UDim2.new(1,-12,0,45)
 header.BackgroundColor3 = Color3.fromRGB(30,30,30)
 Instance.new("UICorner", header).CornerRadius = UDim.new(0,12)
 
@@ -65,45 +77,21 @@ title.TextColor3 = Color3.fromRGB(255,255,255)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 20
 
--- LIST LAYOUT (QUAN TRỌNG)
-local layout = Instance.new("UIListLayout")
-layout.Parent = scroll
-layout.Padding = UDim.new(0, 8)
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.VerticalAlignment = Enum.VerticalAlignment.Top
-
--- AUTO RESIZE SCROLL
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 20)
-end)
-
--- TITLE
-local title = Instance.new("TextLabel")
-title.Parent = scroll
-title.Size = UDim2.fromScale(1, 0.1)
-title.Text = "Cao Bình Minh"
-title.TextColor3 = Color3.new(1,1,1)
-title.TextScaled = false
-title.TextSize = 22
-title.BackgroundTransparency = 1
-
--- BUTTON FUNCTION (ĐÚNG)
+-- BUTTON FUNC
 local function btn(text)
 	local b = Instance.new("TextButton")
 	b.Parent = scroll
 	b.Size = UDim2.fromScale(0.9,0.085)
 	b.Text = text
-	b.TextScaled = false
-b.TextSize = 18
+	b.TextSize = 18
 	b.BackgroundColor3 = Color3.fromRGB(50,50,50)
 	b.TextColor3 = Color3.new(1,1,1)
 	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
 	return b
 end
 
+-- TOGGLE MENU (R)
 local open = true
-frame.Size = UDim2.fromScale(0.32, 0.55)
-
 UIS.InputBegan:Connect(function(input, gp)
 	if gp then return end
 	if UIS:GetFocusedTextBox() then return end
