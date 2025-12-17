@@ -1,62 +1,115 @@
+--// PC MENU SCRIPT (FIX FULL)
+task.wait(1)
+
 -- SERVICES
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+
 local lp = Players.LocalPlayer
 
 -- GUI
-local gui = Instance.new("ScreenGui", lp.PlayerGui)
+local gui = Instance.new("ScreenGui")
 gui.Name = "PCMenu"
 gui.ResetOnSpawn = false
+gui.Parent = lp.PlayerGui
 
--- FRAME
-local frame = Instance.new("Frame", gui)
+-- MAIN FRAME
+local frame = Instance.new("Frame")
+frame.Parent = gui
 frame.Size = UDim2.fromScale(0.32, 0.55)
 frame.Position = UDim2.fromScale(0.05, 0.22)
-frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
 frame.Active = true
 frame.Draggable = true
 frame.ZIndex = 2
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
--- SCROLL
-local scroll = Instance.new("ScrollingFrame", frame)
+-- SCROLLING FRAME
+local scroll = Instance.new("ScrollingFrame")
+scroll.Parent = frame
 scroll.Size = UDim2.fromScale(1,1)
+scroll.CanvasSize = UDim2.new(0,0,0,0)
 scroll.ScrollBarThickness = 6
+scroll.ScrollBarImageTransparency = 0.5
 scroll.BackgroundTransparency = 1
+scroll.BorderSizePixel = 0
 scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scroll.ZIndex = 3
 
-local padding = Instance.new("UIPadding", scroll)
-padding.PaddingTop = UDim.new(0,10)
+-- PADDING (RẤT QUAN TRỌNG – KHÔNG CÓ LÀ ĐEN)
+local padding = Instance.new("UIPadding")
+padding.Parent = scroll
+padding.PaddingTop = UDim.new(0,12)
+padding.PaddingBottom = UDim.new(0,12)
+padding.PaddingLeft = UDim.new(0,12)
+padding.PaddingRight = UDim.new(0,12)
 
-local layout = Instance.new("UIListLayout", scroll)
-layout.Padding = UDim.new(0,8)
+-- LAYOUT
+local layout = Instance.new("UIListLayout")
+layout.Parent = scroll
+layout.Padding = UDim.new(0,10)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
 -- HEADER
-local header = Instance.new("Frame", scroll)
-header.Size = UDim2.new(1,-12,0,45)
-header.BackgroundColor3 = Color3.fromRGB(30,30,30)
+local header = Instance.new("Frame")
+header.Parent = scroll
+header.Size = UDim2.new(1,0,0,45)
+header.BackgroundColor3 = Color3.fromRGB(35,35,35)
+header.ZIndex = 4
 Instance.new("UICorner", header).CornerRadius = UDim.new(0,12)
 
-local title = Instance.new("TextLabel", header)
+local title = Instance.new("TextLabel")
+title.Parent = header
 title.Size = UDim2.fromScale(1,1)
 title.BackgroundTransparency = 1
 title.Text = "Cao Bình Minh Hub"
-title.TextColor3 = Color3.new(1,1,1)
+title.TextColor3 = Color3.fromRGB(255,255,255)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 20
+title.ZIndex = 5
 
+-- BUTTON FUNCTION
+local function CreateButton(text)
+	local btn = Instance.new("TextButton")
+	btn.Parent = scroll
+	btn.Size = UDim2.fromScale(0.9,0.085)
+	btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+	btn.Text = text
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.TextSize = 18
+	btn.Font = Enum.Font.Gotham
+	btn.ZIndex = 4
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
+	return btn
+end
+
+-- TEST BUTTON
+local testBtn = CreateButton("TEST BUTTON")
+testBtn.MouseButton1Click:Connect(function()
+	print("Button clicked OK")
+end)
+
+-- TOGGLE MENU WITH R
 local open = true
 UIS.InputBegan:Connect(function(input, gp)
-	if gp or UIS:GetFocusedTextBox() then return end
+	if gp then return end
+	if UIS:GetFocusedTextBox() then return end
 
 	if input.KeyCode == Enum.KeyCode.R then
 		open = not open
-		frame.Visible = open
-		shadow.Visible = open
+		TweenService:Create(
+			frame,
+			TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+			{
+				Size = open and UDim2.fromScale(0.32,0.55) or UDim2.fromScale(0,0)
+			}
+		):Play()
 	end
 end)
+
+print("✅ Menu loaded successfully")
 
 -- FLY
 local fly, bv, bg, flyConn = false
