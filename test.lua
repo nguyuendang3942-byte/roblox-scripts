@@ -193,33 +193,52 @@ espBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
---------------------------------------------------
--- KILL AURA (CẦN CÓ TOOL)
---------------------------------------------------
-local ka = false
-local kaBtn = newButton("KILL AURA : OFF")
+-- TELEPORT THEO TÊN
+local tpBox = Instance.new("TextBox", scroll)
+tpBox.Size = UDim2.fromScale(0.9, 0.075)
+tpBox.PlaceholderText = "Nhập tên player..."
+tpBox.Text = ""
+tpBox.TextSize = 16
+tpBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
+tpBox.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", tpBox).CornerRadius = UDim.new(0,10)
 
-kaBtn.MouseButton1Click:Connect(function()
-	ka = not ka
-	kaBtn.Text = ka and "KILL AURA : ON" or "KILL AURA : OFF"
-end)
+local tpBtn = newButton("TELEPORT")
 
-RunService.Heartbeat:Connect(function()
-	if not ka then return end
-
-	local tool
-	for _,v in pairs(char:GetChildren()) do
-		if v:IsA("Tool") then tool = v end
-	end
-	if not tool then return end
+tpBtn.MouseButton1Click:Connect(function()
+	local name = tpBox.Text:lower()
+	if name == "" then return end
 
 	for _,p in pairs(Players:GetPlayers()) do
-		if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-			if (hrp.Position - p.Character.HumanoidRootPart.Position).Magnitude <= 12 then
-				tool:Activate()
+		if p ~= lp and p.Name:lower():find(name) then
+			if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+				hrp.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
+				break
 			end
 		end
 	end
 end)
 
-print("✅ Menu loaded successfully")
+-- ANTI LAG
+local antilag = false
+local antilagBtn = newButton("ANTI LAG : OFF")
+
+antilagBtn.MouseButton1Click:Connect(function()
+	antilag = not antilag
+	antilagBtn.Text = antilag and "ANTI LAG : ON" or "ANTI LAG : OFF"
+
+	for _,v in pairs(workspace:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.Material = Enum.Material.Plastic
+			v.Reflectance = 0
+		elseif v:IsA("Decal") or v:IsA("Texture") then
+			v.Transparency = antilag and 1 or 0
+		elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+			v.Enabled = not antilag
+		end
+	end
+
+	if antilag then
+		settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+	end
+end)
