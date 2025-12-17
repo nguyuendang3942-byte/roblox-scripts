@@ -198,7 +198,7 @@ local walkFling = false
 local wfBtn = newButton("WALK FLING : OFF")
 
 local wfConn
-local FLING_RANGE = 7     -- khoảng cách kích hoạt
+local FLING_RANGE = 9     -- khoảng cách kích hoạt
 local FLING_POWER = 350  -- lực fling
 
 wfBtn.MouseButton1Click:Connect(function()
