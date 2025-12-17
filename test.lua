@@ -19,15 +19,6 @@ frame.Draggable = true
 frame.ZIndex = 2
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
 
--- SHADOW
-local shadow = Instance.new("ImageLabel", gui)
-shadow.Size = frame.Size + UDim2.fromScale(0.05,0.05)
-shadow.Position = frame.Position - UDim2.fromScale(0.025,0.025)
-shadow.BackgroundTransparency = 1
-shadow.Image = "rbxassetid://1316045217"
-shadow.ImageTransparency = 0.6
-shadow.ZIndex = 1
-
 -- SCROLL
 local scroll = Instance.new("ScrollingFrame", frame)
 scroll.Size = UDim2.fromScale(1,1)
