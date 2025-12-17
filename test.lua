@@ -109,8 +109,6 @@ UIS.InputBegan:Connect(function(input, gp)
 	end
 end)
 
-print("✅ Menu loaded successfully")
-
 -- FLY
 local fly, bv, bg, flyConn = false
 local flyBtn = btn("FLY: OFF",0.12)
